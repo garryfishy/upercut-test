@@ -29,7 +29,7 @@ export function CompanyHome() {
 
   const handleCheckboxUncheck = (id: string) => {
     setSelectedIds((prevIds) => prevIds.filter((prevId) => prevId !== id));
-    console.log(selectedIds);
+    selectedIds;
   };
 
   const navigate = useNavigate();

@@ -59,7 +59,6 @@ export function Register() {
               },
             });
       if (register) {
-        console.log(register, "<< ini regis");
         Swal.fire({
           icon: "success",
           title: "Registration Successful",

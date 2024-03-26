@@ -44,7 +44,6 @@ export function Login() {
         : data.loginTalent.token;
 
       localStorage.setItem("token", token);
-      console.log(data.companyLogin, "<< isi dat");
       localStorage.setItem(
         "id",
         data.companyLogin ? data.companyLogin._id : data.loginTalent._id

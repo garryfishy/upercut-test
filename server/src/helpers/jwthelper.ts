@@ -20,7 +20,6 @@ export default class JwtHelper {
       }
       return decodedToken;
     } catch (error) {
-      console.log(error, "<< error");
       return null;
     }
   }
