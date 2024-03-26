@@ -37,30 +37,43 @@ export const resolvers = {
         throw new Error(`Error getting talent info: ${error}`);
       }
     },
-    getAllCompanies: async () => {
+    getAllCompanies: async (
+      _: unknown,
+      { searchParams }: { searchParams: any }
+    ) => {
       try {
-        const pipeline = [
-          {
-            $lookup: {
-              from: "talents",
-              localField: "_id",
-              foreignField: "company",
-              as: "users",
-            },
-          },
-        ];
+        let query: Record<string, any> = {};
 
-        const companiesWithTalents = await CompanyModel.aggregate(pipeline);
+        if (searchParams) {
+          query = Object.keys(searchParams).reduce((acc, key) => {
+            acc[key] = { $regex: new RegExp(searchParams[key], "i") };
+            return acc;
+          }, {} as Record<string, any>);
+        }
 
+        const companiesWithTalents = await CompanyModel.find(query);
         return companiesWithTalents;
       } catch (error) {
         console.error(error);
         throw new Error("Failed to fetch companies with talents.");
       }
     },
-    getAllTalents: async () => {
+    getAllTalents: async (
+      _: unknown,
+      { searchParams }: { searchParams: any }
+    ) => {
       try {
-        return await TalentModel.find();
+        let query: Record<string, any> = {};
+
+        if (searchParams) {
+          query = Object.keys(searchParams).reduce((acc, key) => {
+            acc[key] = { $regex: new RegExp(searchParams[key], "i") };
+            return acc;
+          }, {} as Record<string, any>);
+        }
+
+        const companiesWithTalents = await TalentModel.find(query);
+        return companiesWithTalents;
       } catch (error) {
         console.error(error);
       }
@@ -94,8 +107,6 @@ export const resolvers = {
           company.password
         );
 
-        console.log(password, company.password, "<< ini apa");
-
         if (!passwordMatch) {
           throw new Error("Invalid password.");
         }
@@ -107,7 +118,7 @@ export const resolvers = {
 
         return { _id: company._id, token };
       } catch (error) {
-        throw new Error(`Error logging in talent: ${error}`);
+        throw new Error(`Error logging in company: ${error}`);
       }
     },
     addTalent: async (
@@ -124,6 +135,15 @@ export const resolvers = {
         const { companyId } = JwtHelper.verifyToken(
           context.headers.authorization
         );
+
+        const existingCompany = await CompanyModel.findOne({
+          _id: companyId,
+          users: talentId,
+        }).session(session);
+
+        if (existingCompany) {
+          throw new Error("Talent is already associated with this company.");
+        }
 
         const updatedTalent = await TalentModel.findByIdAndUpdate(
           talentId,
@@ -158,40 +178,38 @@ export const resolvers = {
       { talentIds }: { talentIds: string[] },
       context: any
     ) => {
-      const session = await mongoose.startSession();
-      session.startTransaction();
+      const { companyId } = await JwtHelper.verifyToken(
+        context.headers.authorization
+      );
 
       try {
-        const { companyId } = await JwtHelper.verifyToken(
-          context.headers.authorization
-        );
-
-        const updatePromises = talentIds.map(async (talentId) => {
-          const talent = await TalentModel.findById(talentId).session(session);
-          if (talent) {
-            talent.companies = talent.companies.filter(
-              (company) => company.toString() !== companyId
+        const updatedCompany = await (
+          await mongoose.startSession()
+        ).withTransaction(async (session) => {
+          const updatePromises = talentIds.map(async (talentId) => {
+            const talent = await TalentModel.findById(talentId).session(
+              session
             );
-            await talent.save();
-          }
+            if (talent) {
+              talent.companies = talent.companies.filter(
+                (company) => company.toString() !== companyId
+              );
+              await talent.save();
+            }
+          });
+          await Promise.all(updatePromises);
+
+          return await CompanyModel.findByIdAndUpdate(
+            companyId,
+            { $pullAll: { users: talentIds } },
+            { new: true, session }
+          );
         });
-        await Promise.all(updatePromises);
-
-        const updatedCompany = await CompanyModel.findByIdAndUpdate(
-          companyId,
-          { $pullAll: { users: talentIds } },
-          { new: true, session }
-        );
-
-        await session.commitTransaction();
 
         return updatedCompany;
       } catch (error) {
-        await session.abortTransaction();
         console.error("Transaction aborted:", error);
         throw new Error("Failed to delete talents from company: " + error);
-      } finally {
-        session.endSession();
       }
     },
 
@@ -224,7 +242,6 @@ export const resolvers = {
 
         return newTalent;
       } catch (error) {
-        console.log(error, "<< ini error");
         throw new Error(`Error creating talent: ${error}`);
       }
     },
@@ -307,43 +324,41 @@ export const resolvers = {
       { companyIds }: { companyIds: string[] },
       context: any
     ) => {
-      const session = await mongoose.startSession();
-      session.startTransaction();
+      const { talentId } = await JwtHelper.verifyToken(
+        context.headers.authorization
+      );
 
       try {
-        let { talentId } = await JwtHelper.verifyToken(
-          context.headers.authorization
-        );
+        const deletedCompanies = await (
+          await mongoose.startSession()
+        ).withTransaction(async (session) => {
+          const companies = await CompanyModel.find({
+            _id: { $in: companyIds },
+          }).session(session);
 
-        const companies = await CompanyModel.find({
-          _id: { $in: companyIds },
-        }).session(session);
+          const updatePromises = companies.map(async (company) => {
+            company.users = company.users.filter(
+              (userId) => userId.toString() !== talentId
+            );
+            await company.save();
+          });
+          await Promise.all(updatePromises);
 
-        const updatePromises = companies.map(async (company) => {
-          company.users = company.users.filter(
-            (userId) => userId.toString() !== talentId
-          );
-          await company.save();
+          const talent = await TalentModel.findById(talentId).session(session);
+          if (talent) {
+            talent.companies = talent.companies.filter(
+              (companyId) => !companyIds.includes(companyId.toString())
+            );
+            await talent.save();
+          }
+
+          return companies;
         });
-        await Promise.all(updatePromises);
 
-        const talent = await TalentModel.findById(talentId).session(session);
-        if (talent) {
-          talent.companies = talent.companies.filter(
-            (companyId) => !companyIds.includes(companyId.toString())
-          );
-          await talent.save();
-        }
-
-        await session.commitTransaction();
-
-        return companies;
+        return deletedCompanies;
       } catch (error) {
-        await session.abortTransaction();
         console.error("Transaction aborted:", error);
         throw new Error("Failed to delete companies: " + error);
-      } finally {
-        session.endSession();
       }
     },
   },

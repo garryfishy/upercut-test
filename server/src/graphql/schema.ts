@@ -32,10 +32,10 @@ export const typeDefs = `
   }
 
   input TalentInput {
-    name: String!
-    email: String!
-    password: String!
-    companyIds: [ID!]!
+    name: String
+    email: String
+    password: String
+    companyIds: [ID!]
   }
 
   input LoginTalentInput {
@@ -45,9 +45,9 @@ export const typeDefs = `
 
   type Query {
     getCompanyInfos(companyId: ID!): Company
-    getAllCompanies: [Company]
+    getAllCompanies(searchParams: CompanyInput): [Company]
     getTalentInfos(talentId: ID!): Talent
-    getAllTalents: [Talent]
+    getAllTalents(searchParams: TalentInput): [Talent]
   }
 
   type Mutation {

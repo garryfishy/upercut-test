@@ -1,0 +1,43 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  height: auto;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-items {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.top-items img {
+  border-radius: 0.3rem;
+}
+
+.checkbox {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+@media (max-width: 500px) {
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: auto;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+}

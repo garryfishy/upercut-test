@@ -1,0 +1,15 @@
+.type-change {
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.href {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}

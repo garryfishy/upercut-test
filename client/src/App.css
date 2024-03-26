@@ -1,0 +1,65 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+body {
+  background-color: #031c23aa;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #535bfcaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.box {
+  border: 1px solid black;
+  border-radius: 1rem;
+  width: 100%;
+  background-image: url("https://static.vecteezy.com/system/resources/previews/011/947/001/non_2x/elegant-black-premium-abstract-background-free-vector.jpg");
+}
+
+.container {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container p {
+  color: whitesmoke;
+}
+
+.title {
+  color: whitesmoke;
+}
+
+@media (max-width: 500px) {
+  #root {
+    padding: 0.5rem;
+  }
+}
