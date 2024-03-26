@@ -1,3 +1,7 @@
+.box {
+  padding: 3rem;
+}
+
 .type-change {
   text-align: left;
   cursor: pointer;

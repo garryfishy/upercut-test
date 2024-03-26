@@ -3,3 +3,7 @@
   flex-direction: column;
   margin-bottom: 2rem;
 }
+
+.box {
+  padding: 3rem;
+}

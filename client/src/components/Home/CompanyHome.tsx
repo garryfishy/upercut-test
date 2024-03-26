@@ -29,7 +29,6 @@ export function CompanyHome() {
 
   const handleCheckboxUncheck = (id: string) => {
     setSelectedIds((prevIds) => prevIds.filter((prevId) => prevId !== id));
-    selectedIds;
   };
 
   const navigate = useNavigate();
@@ -121,27 +120,27 @@ export function CompanyHome() {
       </section>
       {selectedIds.length > 0 && (
         <section onClick={handleDelete}>
-          <p className="title">
-            <SvgIcon
-              onClick={() => {
-                handleDelete();
-              }}
-              sx={{
-                cursor: "pointer",
-                fontSize: "24px",
-                color: "#757575",
-                transition: "color 0.3s ease",
-                "&:hover": {
-                  color: "#f44336",
-                },
-              }}
+          <SvgIcon
+            onClick={handleDelete}
+            sx={{
+              cursor: "pointer",
+              fontSize: "24px",
+              color: "#757575",
+              transition: "color 0.3s ease",
+              "&:hover path": {
+                fill: "#f44336",
+              },
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
             >
-              <path
-                fill="currentColor"
-                d="M14.5 3h-5l-1-1h-3l-1 1h-1v1h1l1 12c0 .6.4 1 1 1h10c.6 0 1-.4 1-1l1-12h1v-1h-1zM7 3.5l.5-.5h6l.5.5h-7zM17 16c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-1h7v1zM12 5h-2v8h2v-8z"
-              />
-            </SvgIcon>
-          </p>{" "}
+              <path d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z" />
+            </svg>
+          </SvgIcon>
         </section>
       )}
       <p className="title">
