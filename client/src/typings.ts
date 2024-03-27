@@ -3,10 +3,10 @@ export interface CardProps {
   email?: string;
   canDelete?: boolean;
   canAdd?: boolean;
-  id: string; // Making id optional
-  refetchProfile?: () => void; // Making refetchProfile optional
-  onCheck?: (id: string) => void; // Optional callback for when the checkbox is checked
-  onUncheck?: (id: string) => void; // Optional callback for when the checkbox is unchecked
+  id: string;
+  refetchProfile?: () => void;
+  onCheck?: (id: string) => void;
+  onUncheck?: (id: string) => void;
 }
 
 export interface User {

@@ -9,7 +9,7 @@ import {
   REGISTER_TALENT,
 } from "../../graphql/graphql";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User } from "../../typings";
 
 export function Register() {
@@ -161,9 +161,7 @@ export function Register() {
         <footer>
           <p>Already have an account ?</p>
           <nav>
-            <a href="/login" className="href">
-              Login
-            </a>
+            <Link to={"/login"}>Login</Link>
           </nav>
         </footer>
       </section>

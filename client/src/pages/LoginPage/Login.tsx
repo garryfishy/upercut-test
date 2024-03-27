@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useMutation } from "@apollo/client";
 import { Input } from "../../components/TextField";
 import { LOGIN_COMPANY, LOGIN_TALENT } from "../../graphql/graphql";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Login() {
   const [loginCompany] = useMutation(LOGIN_COMPANY);
@@ -102,9 +102,7 @@ export function Login() {
         <footer>
           <p>Don't have an account ?</p>
           <nav>
-            <a href="/register" className="href">
-              Click here to register
-            </a>
+            <Link to={"/register"}> Click here to register</Link>
           </nav>
         </footer>
       </section>

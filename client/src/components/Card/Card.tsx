@@ -29,11 +29,11 @@ export function CardComponent(props: CardProps) {
     setIsChecked(!isChecked);
     if (!isChecked) {
       if (props.onCheck) {
-        props.onCheck(props?.id); // Call onCheck if it's defined
+        props.onCheck(props?.id);
       }
     } else {
       if (props.onUncheck) {
-        props.onUncheck(props?.id); // Call onUncheck if it's defined
+        props.onUncheck(props?.id);
       }
     }
   };

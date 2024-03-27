@@ -3,6 +3,7 @@ import { TalentModel } from "../models/Talent";
 import BcryptHelper from "../helpers/bcrypt";
 import JwtHelper, { UserRole } from "../helpers/jwthelper";
 import mongoose from "mongoose";
+import { Company, Talent } from "../typings";
 export const resolvers = {
   Query: {
     getCompanyInfos: async (
@@ -80,7 +81,7 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createCompany: async (_: unknown, { input }: { input: any }) => {
+    createCompany: async (_: unknown, { input }: { input: Company }) => {
       try {
         const hashedPassword = await BcryptHelper.hashPassword(input.password);
         const inputWithHashedPassword = { ...input, password: hashedPassword };
@@ -92,7 +93,7 @@ export const resolvers = {
       }
     },
 
-    companyLogin: async (_: unknown, { input }: { input: any }) => {
+    companyLogin: async (_: unknown, { input }: { input: Company }) => {
       try {
         const { email, password } = input;
 
@@ -216,7 +217,7 @@ export const resolvers = {
     // // Mutations for Talent actions
     createTalent: async (
       _: unknown,
-      { input }: { input: any },
+      { input }: { input: Talent },
       context: any
     ) => {
       try {
@@ -246,7 +247,7 @@ export const resolvers = {
       }
     },
 
-    loginTalent: async (_: unknown, { input }: { input: any }) => {
+    loginTalent: async (_: unknown, { input }: { input: Talent }) => {
       try {
         const { email, password } = input;
 
